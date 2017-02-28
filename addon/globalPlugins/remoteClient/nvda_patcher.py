@@ -43,7 +43,7 @@ class NVDAPatcher(callback_manager.CallbackManager):
 class NVDASlavePatcher(NVDAPatcher):
 	"""Class to manage patching of synth, tones, nvwave, and braille."""
 
-	def __init__(self):
+	def __init__(self,disable_local=False):
 		super(NVDASlavePatcher, self).__init__()
 		self.orig_speak = None
 		self.orig_cancel = None
@@ -151,15 +151,18 @@ class NVDASlavePatcher(NVDAPatcher):
 
 	def speak(self, speechSequence):
 		self.call_callbacks('speak', speechSequence=speechSequence)
-		self.orig_speak(speechSequence)
+		if not self.disable_local:
+			self.orig_speak(speechSequence)
 
 	def cancel(self):
 		self.call_callbacks('cancel_speech')
-		self.orig_cancel()
+		if not self.disable_local:
+			self.orig_cancel()
 
 	def beep(self, hz, length, left=50, right=50):
 		self.call_callbacks('beep', hz=hz, length=length, left=left, right=right)
-		return self.orig_beep(hz=hz, length=length, left=left, right=right)
+		if not self.disable_local:
+			return self.orig_beep(hz=hz, length=length, left=left, right=right)
 
 	def setSynth(self, *args, **kwargs):
 		orig = self.orig_setSynth
@@ -170,11 +173,13 @@ class NVDASlavePatcher(NVDAPatcher):
 
 	def playWaveFile(self, fileName, async=True):
 		self.call_callbacks('wave', fileName=fileName, async=async)
-		return self.orig_playWaveFile(fileName, async=async)
+		if not self.disable_local:
+			return self.orig_playWaveFile(fileName, async=async)
 
 	def display(self, cells):
 		self.call_callbacks('display', cells=cells)
-		self.orig_display(cells)
+		if not self.disable_local:
+			self.orig_display(cells)
 
 	def _get_lastIndex(self, instance):
 		return self.last_index_callback()
