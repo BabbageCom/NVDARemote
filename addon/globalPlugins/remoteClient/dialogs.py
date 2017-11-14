@@ -128,13 +128,13 @@ class DirectConnectDialog(wx.Dialog):
 		self.client_or_server.SetSelection(0)
 		main_sizer.Add(self.client_or_server)
 		if not allowServer:
-			self.client_or_server.Disable()
+			self.client_or_server.EnableItem(1,False)
 		choices = [_("Control another machine"), _("Allow this machine to be controlled")]
 		self.connection_type = wx.RadioBox(self, wx.ID_ANY, choices=choices, style=wx.RA_VERTICAL)
 		self.connection_type.SetSelection(int(not allowMaster))
 		main_sizer.Add(self.connection_type)
 		if not allowMaster:
-			self.connection_type.Disable()
+			self.connection_type.EnableItem(0,False)
 		self.container = wx.Panel(parent=self)
 		self.panel = ClientPanel(parent=self.container)
 		main_sizer.Add(self.container)
